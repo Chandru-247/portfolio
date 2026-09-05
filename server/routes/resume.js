@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const multer = require('multer');
 const { getDatabase, saveDatabase } = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
@@ -16,24 +17,27 @@ function getUserResumeNames(db) {
   return { cleanName, title, filename };
 }
 
-// Multer setup for resume
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '..', 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+// Get writable directory (local uploads or OS tmpdir for Vercel/serverless)
+function getUploadDir() {
+  const localDir = path.join(__dirname, '..', 'uploads');
+  try {
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
     }
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname) || '.pdf';
-    const cleanName = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
-    cb(null, `Resume_${cleanName}_${Date.now()}${ext}`);
+    fs.accessSync(localDir, fs.constants.W_OK);
+    return localDir;
+  } catch {
+    const tmpDir = path.join(os.tmpdir(), 'galaxy_uploads');
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir, { recursive: true });
+    }
+    return tmpDir;
   }
-});
+}
 
+// Memory storage prevents filesystem crashes on serverless runtimes like Vercel
 const upload = multer({
-  storage,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 10 * 1024 * 1024 } // 10MB limit
 });
 
@@ -84,28 +88,44 @@ router.post('/upload', requireAuth, upload.single('resumeFile'), (req, res) => {
     });
   }
 
-  const db = getDatabase();
-  const fileUrl = `/uploads/${req.file.filename}`;
-  const fileSizeKb = Math.round(req.file.size / 1024);
+  try {
+    const db = getDatabase();
+    const ext = path.extname(req.file.originalname) || '.pdf';
+    const cleanName = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `Resume_${cleanName}_${Date.now()}${ext}`;
+    const uploadDir = getUploadDir();
+    const filePath = path.join(uploadDir, filename);
 
-  db.resume = {
-    title: req.body.title || req.file.originalname,
-    filename: req.file.filename,
-    fileUrl,
-    externalUrl: db.resume?.externalUrl || '',
-    lastUpdated: new Date().toISOString(),
-    fileSize: `${fileSizeKb} KB`,
-    useExternal: false,
-    isCustomUpload: true
-  };
+    fs.writeFileSync(filePath, req.file.buffer);
 
-  saveDatabase(db);
+    const fileUrl = `/uploads/${filename}`;
+    const fileSizeKb = Math.round(req.file.size / 1024);
 
-  res.json({
-    success: true,
-    message: 'New resume successfully uploaded to the archives.',
-    data: db.resume
-  });
+    db.resume = {
+      title: req.body.title || req.file.originalname,
+      filename,
+      fileUrl,
+      externalUrl: db.resume?.externalUrl || '',
+      lastUpdated: new Date().toISOString(),
+      fileSize: `${fileSizeKb} KB`,
+      useExternal: false,
+      isCustomUpload: true
+    };
+
+    saveDatabase(db);
+
+    return res.json({
+      success: true,
+      message: 'New resume successfully uploaded to the archives.',
+      data: db.resume
+    });
+  } catch (err) {
+    console.error('Resume upload error:', err);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to save uploaded resume: ' + err.message
+    });
+  }
 });
 
 // POST /api/resume/regenerate - Re-generates PDF from current profile data
@@ -113,12 +133,9 @@ router.post('/regenerate', requireAuth, async (req, res) => {
   try {
     const db = getDatabase();
     const { title, filename } = getUserResumeNames(db);
-    const uploadDir = path.join(__dirname, '..', 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
+    const uploadDir = getUploadDir();
     const filePath = path.join(uploadDir, filename);
+
     await generateResumePdf(db, filePath);
     const stats = fs.statSync(filePath);
     const fileSizeKb = (stats.size / 1024).toFixed(1);
@@ -153,10 +170,7 @@ router.post('/regenerate', requireAuth, async (req, res) => {
 // Helper to ensure a valid resume file exists and return its path
 async function ensureResumeFile(db) {
   const { title, filename } = getUserResumeNames(db);
-  const uploadDir = path.join(__dirname, '..', 'uploads');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
+  const uploadDir = getUploadDir();
 
   // If a custom file was uploaded and exists with valid size (>200 bytes)
   if (db.resume?.filename) {
