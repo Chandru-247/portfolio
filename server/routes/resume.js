@@ -7,6 +7,7 @@ const multer = require('multer');
 const { getDatabase, saveDatabase } = require('../config/db');
 const { requireAuth } = require('../middleware/auth');
 const { generateResumePdf } = require('../utils/generateResumePdf');
+const { uploadStream, isCloudinaryConfigured } = require('../utils/cloudinary');
 
 // Helper to get formatted filename from user name
 function getUserResumeNames(db) {
@@ -80,7 +81,7 @@ router.put('/', requireAuth, (req, res) => {
 });
 
 // POST /api/resume/upload
-router.post('/upload', requireAuth, upload.single('resumeFile'), (req, res) => {
+router.post('/upload', requireAuth, upload.single('resumeFile'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({
       success: false,
@@ -93,13 +94,36 @@ router.post('/upload', requireAuth, upload.single('resumeFile'), (req, res) => {
     const ext = path.extname(req.file.originalname) || '.pdf';
     const cleanName = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
     const filename = `Resume_${cleanName}_${Date.now()}${ext}`;
-    const uploadDir = getUploadDir();
-    const filePath = path.join(uploadDir, filename);
 
-    fs.writeFileSync(filePath, req.file.buffer);
-
-    const fileUrl = `/uploads/${filename}`;
+    let fileUrl = '';
     const fileSizeKb = Math.round(req.file.size / 1024);
+
+    // 1. If Cloudinary is configured, upload directly to Cloudinary
+    if (isCloudinaryConfigured()) {
+      try {
+        const cloudResult = await uploadStream(req.file.buffer, {
+          folder: 'galaxy_portfolio/resumes',
+          public_id: `resume_${cleanName}_${Date.now()}`,
+          resource_type: 'auto'
+        });
+        fileUrl = cloudResult.secure_url;
+      } catch (cloudErr) {
+        console.warn('⚠️ Cloudinary upload failed for resume, falling back to local storage:', cloudErr.message);
+      }
+    }
+
+    // 2. Fallback to local storage if Cloudinary omitted or failed
+    if (!fileUrl) {
+      const uploadDir = getUploadDir();
+      const filePath = path.join(uploadDir, filename);
+      try {
+        fs.writeFileSync(filePath, req.file.buffer);
+        fileUrl = `/uploads/${filename}`;
+      } catch (writeErr) {
+        console.warn('Local disk write failed, fallback to base64 data URL:', writeErr.message);
+        fileUrl = `data:application/pdf;base64,${req.file.buffer.toString('base64')}`;
+      }
+    }
 
     db.resume = {
       title: req.body.title || req.file.originalname,

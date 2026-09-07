@@ -5,6 +5,7 @@ const fs = require('fs');
 const os = require('os');
 const multer = require('multer');
 const { requireAuth } = require('../middleware/auth');
+const { uploadStream, isCloudinaryConfigured } = require('../utils/cloudinary');
 
 // Get writable directory (local uploads or OS tmpdir for Vercel/serverless)
 function getUploadDir() {
@@ -41,7 +42,7 @@ const upload = multer({
 });
 
 // POST /api/upload
-router.post('/', requireAuth, upload.single('file'), (req, res) => {
+router.post('/', requireAuth, upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({
@@ -53,32 +54,54 @@ router.post('/', requireAuth, upload.single('file'), (req, res) => {
     const ext = path.extname(req.file.originalname) || '.png';
     const cleanName = path.basename(req.file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, '_');
     const filename = `Asset_${cleanName}_${Date.now()}${ext}`;
-    const { dir, isLocal } = getUploadDir();
 
     let fileUrl = '';
+    let storageProvider = 'local';
 
-    // If local directory is writable, write file to disk
-    if (isLocal) {
+    // 1. If Cloudinary is configured, stream upload directly to Cloudinary CDN
+    if (isCloudinaryConfigured()) {
       try {
-        const filePath = path.join(dir, filename);
-        fs.writeFileSync(filePath, req.file.buffer);
-        fileUrl = `/uploads/${filename}`;
-      } catch (err) {
-        console.warn('Local disk write failed, fallback to data URL:', err.message);
+        const cloudResult = await uploadStream(req.file.buffer, {
+          folder: 'galaxy_portfolio/assets',
+          public_id: `asset_${cleanName}_${Date.now()}`,
+          resource_type: 'auto'
+        });
+        fileUrl = cloudResult.secure_url;
+        storageProvider = 'cloudinary';
+      } catch (cloudErr) {
+        console.warn('⚠️ Cloudinary upload failed, falling back to local/data URL storage:', cloudErr.message);
       }
     }
 
-    // In serverless / read-only environment or if disk write failed, use Base64 Data URL
+    // 2. Fallback to local storage if Cloudinary not configured or failed
     if (!fileUrl) {
-      const mime = req.file.mimetype || 'image/png';
-      fileUrl = `data:${mime};base64,${req.file.buffer.toString('base64')}`;
+      const { dir, isLocal } = getUploadDir();
+
+      if (isLocal) {
+        try {
+          const filePath = path.join(dir, filename);
+          fs.writeFileSync(filePath, req.file.buffer);
+          fileUrl = `/uploads/${filename}`;
+          storageProvider = 'local-disk';
+        } catch (err) {
+          console.warn('Local disk write failed, fallback to data URL:', err.message);
+        }
+      }
+
+      // In serverless / read-only environment or if disk write failed, use Base64 Data URL
+      if (!fileUrl) {
+        const mime = req.file.mimetype || 'image/png';
+        fileUrl = `data:${mime};base64,${req.file.buffer.toString('base64')}`;
+        storageProvider = 'base64';
+      }
     }
 
     return res.json({
       success: true,
-      message: 'File successfully archived.',
+      message: `File successfully archived via ${storageProvider}.`,
       fileUrl,
       filename,
+      storage: storageProvider,
       size: req.file.size
     });
   } catch (err) {

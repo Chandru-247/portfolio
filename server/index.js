@@ -4,7 +4,8 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 
-const { loadDatabase } = require('./config/db');
+const { loadDatabase, connectDB, isMongoConnected } = require('./config/db');
+const { isCloudinaryConfigured } = require('./utils/cloudinary');
 
 // Initialize Express App
 const app = express();
@@ -12,6 +13,11 @@ const PORT = process.env.PORT || 5000;
 
 // Initialize Database & Seeds
 loadDatabase();
+if (process.env.MONGODB_URI) {
+  connectDB().catch((err) => {
+    console.warn('⚠️ MongoDB connection notice on startup:', err.message);
+  });
+}
 
 // Middleware
 app.use(cors());
@@ -47,6 +53,8 @@ app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
     system: 'Galaxy-Portfolio-Core',
+    database: isMongoConnected() ? 'MongoDB Atlas (Connected)' : 'Local Persistent JSON Storage',
+    storage: isCloudinaryConfigured() ? 'Cloudinary CDN (Active)' : 'Local Disk Storage',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });

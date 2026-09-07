@@ -1,6 +1,16 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+
+// Mongoose Models for MongoDB Atlas
+const AdminUser = require('../models/AdminUser');
+const Profile = require('../models/Profile');
+const Skill = require('../models/Skill');
+const Project = require('../models/Project');
+const Certificate = require('../models/Certificate');
+const Message = require('../models/Message');
+const Resume = require('../models/Resume');
 
 const DB_FILE = path.join(__dirname, '..', 'data', 'portfolio-db.json');
 
@@ -282,6 +292,194 @@ const defaultData = {
 // In-memory cached database
 let databaseCache = null;
 
+// Serverless Mongoose connection cache for Vercel lambdas
+let cachedMongoose = global.mongooseCache;
+if (!cachedMongoose) {
+  cachedMongoose = global.mongooseCache = { conn: null, promise: null };
+}
+
+function isMongoConnected() {
+  return mongoose.connection && mongoose.connection.readyState === 1;
+}
+
+/**
+ * Connect to MongoDB Atlas with connection pooling & serverless caching
+ */
+async function connectDB() {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    return null;
+  }
+
+  if (cachedMongoose.conn) {
+    return cachedMongoose.conn;
+  }
+
+  if (!cachedMongoose.promise) {
+    const opts = {
+      bufferCommands: false,
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 5000
+    };
+
+    cachedMongoose.promise = mongoose.connect(uri, opts).then(async (m) => {
+      console.log('🌌 [Cosmic DB] Successfully connected to MongoDB Atlas');
+      // On first connection, sync data from Atlas or auto-seed if empty
+      await syncFromMongo();
+      return m;
+    }).catch((err) => {
+      console.warn('⚠️ [Cosmic DB] MongoDB Atlas connection error, using local fallback:', err.message);
+      cachedMongoose.promise = null;
+      return null;
+    });
+  }
+
+  try {
+    cachedMongoose.conn = await cachedMongoose.promise;
+  } catch (e) {
+    cachedMongoose.promise = null;
+    return null;
+  }
+
+  return cachedMongoose.conn;
+}
+
+/**
+ * Fetch all collections from MongoDB Atlas into databaseCache.
+ * If MongoDB is empty, automatically seeds it from current databaseCache / defaultData!
+ */
+async function syncFromMongo() {
+  if (!isMongoConnected()) return null;
+
+  try {
+    const [profileDoc, adminDoc, resumeDoc, skillsDocs, projectsDocs, certsDocs, messagesDocs] = await Promise.all([
+      Profile.findOne().lean(),
+      AdminUser.findOne().lean(),
+      Resume.findOne().lean(),
+      Skill.find().sort({ order: 1 }).lean(),
+      Project.find().sort({ order: 1 }).lean(),
+      Certificate.find().lean(),
+      Message.find().sort({ createdAt: -1 }).lean()
+    ]);
+
+    // Check if Atlas is brand new / empty
+    const isEmpty = !profileDoc && (!skillsDocs || skillsDocs.length === 0);
+
+    if (isEmpty) {
+      console.log('✨ [Cosmic DB] MongoDB Atlas is empty. Initializing with local portfolio records...');
+      const sourceData = databaseCache || loadLocalData();
+      await syncToMongo(sourceData);
+      return databaseCache;
+    }
+
+    // Build unified data object from Atlas documents
+    databaseCache = {
+      adminUser: adminDoc || defaultData.adminUser,
+      profile: profileDoc || defaultData.profile,
+      resume: resumeDoc || defaultData.resume,
+      skills: (skillsDocs && skillsDocs.length > 0) ? skillsDocs : defaultData.skills,
+      projects: projectsDocs || [],
+      certificates: certsDocs || [],
+      messages: messagesDocs || []
+    };
+
+    return databaseCache;
+  } catch (err) {
+    console.error('Error syncing from MongoDB Atlas:', err.message);
+    return null;
+  }
+}
+
+/**
+ * Push data object directly to MongoDB Atlas
+ */
+async function syncToMongo(data) {
+  if (!isMongoConnected() || !data) return false;
+
+  try {
+    const operations = [];
+
+    // 1. Sync Profile
+    if (data.profile) {
+      operations.push(
+        Profile.findOneAndUpdate({}, { $set: data.profile }, { upsert: true, returnDocument: 'after' })
+      );
+    }
+
+    // 2. Sync AdminUser
+    if (data.adminUser) {
+      operations.push(
+        AdminUser.findOneAndUpdate(
+          { username: data.adminUser.username || 'admin' },
+          { $set: data.adminUser },
+          { upsert: true, returnDocument: 'after' }
+        )
+      );
+    }
+
+    // 3. Sync Resume
+    if (data.resume) {
+      operations.push(
+        Resume.findOneAndUpdate({}, { $set: data.resume }, { upsert: true, returnDocument: 'after' })
+      );
+    }
+
+    // 4. Sync Skills
+    if (Array.isArray(data.skills)) {
+      operations.push(
+        Skill.deleteMany({}).then(() => {
+          if (data.skills.length > 0) return Skill.insertMany(data.skills);
+        })
+      );
+    }
+
+    // 5. Sync Projects
+    if (Array.isArray(data.projects)) {
+      operations.push(
+        Project.deleteMany({}).then(() => {
+          if (data.projects.length > 0) return Project.insertMany(data.projects);
+        })
+      );
+    }
+
+    // 6. Sync Certificates
+    if (Array.isArray(data.certificates)) {
+      operations.push(
+        Certificate.deleteMany({}).then(() => {
+          if (data.certificates.length > 0) return Certificate.insertMany(data.certificates);
+        })
+      );
+    }
+
+    // 7. Sync Messages
+    if (Array.isArray(data.messages)) {
+      operations.push(
+        Message.deleteMany({}).then(() => {
+          if (data.messages.length > 0) return Message.insertMany(data.messages);
+        })
+      );
+    }
+
+    await Promise.all(operations);
+    return true;
+  } catch (err) {
+    console.error('Error syncing to MongoDB Atlas:', err.message);
+    return false;
+  }
+}
+
+function loadLocalData() {
+  try {
+    if (!fs.existsSync(DB_FILE)) {
+      return defaultData;
+    }
+    const raw = fs.readFileSync(DB_FILE, 'utf-8');
+    return JSON.parse(raw);
+  } catch (err) {
+    return defaultData;
+  }
+}
+
 function loadDatabase() {
   try {
     if (!fs.existsSync(DB_FILE)) {
@@ -290,6 +488,14 @@ function loadDatabase() {
     }
     const raw = fs.readFileSync(DB_FILE, 'utf-8');
     databaseCache = JSON.parse(raw);
+
+    // If MongoDB Atlas connection URI is configured, initiate connection
+    if (process.env.MONGODB_URI) {
+      connectDB().catch((err) => {
+        console.warn('Asynchronous MongoDB connect error:', err.message);
+      });
+    }
+
     return databaseCache;
   } catch (err) {
     console.error('Error loading portfolio database, resetting to defaults:', err);
@@ -301,7 +507,22 @@ function loadDatabase() {
 function saveDatabase(data) {
   try {
     databaseCache = data;
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+
+    // 1. Persist locally to portfolio-db.json if writable
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (fsErr) {
+      // In read-only serverless environment like Vercel, ignore local write failure
+      console.warn('Local database file write bypassed (serverless environment):', fsErr.message);
+    }
+
+    // 2. Persist to MongoDB Atlas if connected
+    if (isMongoConnected()) {
+      syncToMongo(data).catch((mongoErr) => {
+        console.error('Failed to async sync database change to MongoDB Atlas:', mongoErr.message);
+      });
+    }
+
     return true;
   } catch (err) {
     console.error('Error saving portfolio database:', err);
@@ -320,5 +541,9 @@ module.exports = {
   getDatabase,
   saveDatabase,
   loadDatabase,
+  connectDB,
+  isMongoConnected,
+  syncFromMongo,
+  syncToMongo,
   defaultData
 };
