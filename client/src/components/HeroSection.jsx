@@ -371,6 +371,7 @@ export default function HeroSection({ profile, onDownloadResume, onExploreProjec
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
+                    objectPosition: profile?.avatarPosition || 'center 85%',
                     display: 'block'
                   }}
                   onError={(e) => {

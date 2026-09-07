@@ -321,7 +321,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
     setProfile({ ...profile, careerGoals: updated });
   };
 
-  /* ---------------- AVATAR PHOTO UPLOAD ---------------- */
+  /* ---------------- AVATAR PHOTO UPLOAD & POSITIONING ---------------- */
   const handleAvatarUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -330,7 +330,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
     formData.append('file', file);
 
     try {
-      showToast('Uploading profile image...', 'info');
+      showToast('Uploading profile image to CDN...', 'info');
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
@@ -338,14 +338,81 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
       });
       const data = await res.json();
       if (res.ok && data.success) {
-        setProfile({ ...profile, avatar: data.fileUrl });
-        showToast('Profile image uploaded! Click "Save All Profile Changes" below to apply permanently.');
+        const nextPosition = profile.avatarPosition || 'center 85%';
+        const updated = { ...profile, avatar: data.fileUrl, avatarPosition: nextPosition };
+        setProfile(updated);
+        
+        // Auto-save to profile telemetry immediately so it never gets lost
+        try {
+          await fetch('/api/profile', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(updated)
+          });
+          showToast('Profile image uploaded & saved live! Adjust framing below if needed.');
+        } catch {
+          showToast('Profile image uploaded! Click Save Avatar to persist.');
+        }
       } else {
         showToast(data.message || 'Error uploading image', 'error');
       }
     } catch (err) {
       showToast('Connection error uploading image', 'error');
     }
+  };
+
+  const handleSaveAvatarDirect = async () => {
+    try {
+      showToast('Saving avatar telemetry...', 'info');
+      const res = await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(profile)
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        showToast('Avatar image & framing saved permanently!');
+        fetchAllData();
+      } else {
+        showToast(data.message || 'Error saving avatar', 'error');
+      }
+    } catch (err) {
+      showToast('Connection error saving avatar', 'error');
+    }
+  };
+
+  const handleResetAvatar = async () => {
+    const updated = { ...profile, avatar: '/assets/avatar_cosmic.png', avatarPosition: 'center' };
+    setProfile(updated);
+    try {
+      await fetch('/api/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(updated)
+      });
+      showToast('Reset to default cosmic astronaut avatar!');
+    } catch {
+      showToast('Reset avatar in preview. Click Save Avatar to persist.');
+    }
+  };
+
+  const getAvatarVerticalPercent = () => {
+    if (!profile?.avatarPosition) return 85;
+    const match = profile.avatarPosition.match(/(\d+)%/);
+    if (match) return parseInt(match[1], 10);
+    if (profile.avatarPosition.includes('bottom')) return 95;
+    if (profile.avatarPosition.includes('top')) return 15;
+    if (profile.avatarPosition.includes('center')) return 50;
+    return 85;
   };
 
   /* ---------------- RESUME UPDATE / UPLOAD ---------------- */
@@ -1317,34 +1384,53 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
                   <h3 style={{ fontSize: '1.2rem', color: '#00f0ff' }}>Hero Section Telemetry</h3>
 
                   {/* Profile Photo / Avatar Manager */}
-                  <div style={{ padding: '1.25rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                    <label style={{ display: 'block', fontSize: '0.85rem', color: '#00f0ff', fontWeight: 600, marginBottom: '0.85rem' }}>
-                      Profile Photo / Astronaut Avatar
-                    </label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-                      <div 
-                        style={{ 
-                          position: 'relative', 
-                          width: '96px', 
-                          height: '96px', 
-                          borderRadius: '20px', 
-                          overflow: 'hidden', 
-                          border: '2px solid #00f0ff', 
-                          boxShadow: '0 0 18px rgba(0,240,255,0.3)', 
-                          background: '#050716', 
-                          flexShrink: 0 
-                        }}
-                      >
-                        <img
-                          src={profile.avatar || '/assets/avatar_cosmic.png'}
-                          alt="Avatar Preview"
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={(e) => { e.currentTarget.src = '/assets/avatar_cosmic.png'; }}
-                        />
+                  <div style={{ padding: '1.5rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '14px', border: '1px solid rgba(0, 240, 255, 0.2)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <label style={{ display: 'block', fontSize: '0.95rem', color: '#00f0ff', fontWeight: 600 }}>
+                        Profile Photo / Astronaut Avatar
+                      </label>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                        Synchronized live with Hero Section &amp; CDN
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1.5rem', flexWrap: 'wrap' }}>
+                      {/* Avatar Preview Box with live position */}
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                        <div 
+                          style={{ 
+                            position: 'relative', 
+                            width: '120px', 
+                            height: '120px', 
+                            borderRadius: '24px', 
+                            overflow: 'hidden', 
+                            border: '2px solid #00f0ff', 
+                            boxShadow: '0 0 25px rgba(0,240,255,0.35)', 
+                            background: '#050716', 
+                            flexShrink: 0 
+                          }}
+                        >
+                          <img
+                            src={profile.avatar || '/assets/avatar_cosmic.png'}
+                            alt="Avatar Preview"
+                            style={{ 
+                              width: '100%', 
+                              height: '100%', 
+                              objectFit: 'cover',
+                              objectPosition: profile.avatarPosition || 'center 85%'
+                            }}
+                            onError={(e) => { e.currentTarget.src = '/assets/avatar_cosmic.png'; }}
+                          />
+                        </div>
+                        <span style={{ fontSize: '0.7rem', color: '#00f0ff', fontFamily: 'var(--font-mono)' }}>
+                          Live Preview
+                        </span>
                       </div>
 
-                      <div style={{ flex: 1, minWidth: '240px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      {/* Controls */}
+                      <div style={{ flex: 1, minWidth: '260px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        {/* Action Buttons */}
+                        <div style={{ display: 'flex', gap: '0.65rem', flexWrap: 'wrap' }}>
                           <label 
                             className="btn-cosmic-primary clickable" 
                             style={{ padding: '0.55rem 1.1rem', fontSize: '0.82rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}
@@ -1360,26 +1446,101 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
 
                           <button
                             type="button"
-                            onClick={() => setProfile({ ...profile, avatar: '/assets/avatar_cosmic.png' })}
+                            onClick={handleResetAvatar}
                             className="btn-cosmic-outline clickable"
                             style={{ padding: '0.55rem 0.9rem', fontSize: '0.82rem' }}
                           >
                             Reset to Default Avatar
                           </button>
+
+                          <button
+                            type="button"
+                            onClick={handleSaveAvatarDirect}
+                            className="btn-cosmic-primary clickable"
+                            style={{ 
+                              padding: '0.55rem 1rem', 
+                              fontSize: '0.82rem', 
+                              background: 'linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(114, 9, 183, 0.4))', 
+                              border: '1px solid #00f0ff',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.4rem'
+                            }}
+                          >
+                            <Save size={14} /> Save Avatar
+                          </button>
                         </div>
 
+                        {/* Direct URL Input */}
                         <div>
-                          <label style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
-                            Or enter direct image URL / asset path:
+                          <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+                            Or direct image URL / asset path:
                           </label>
                           <input
                             type="text"
-                            placeholder="e.g. /uploads/Asset_photo.jpg or https://..."
+                            placeholder="e.g. https://res.cloudinary.com/... or /uploads/..."
                             value={profile.avatar || ''}
                             onChange={(e) => setProfile({ ...profile, avatar: e.target.value })}
                             className="cosmic-input"
                             style={{ fontSize: '0.82rem', padding: '0.45rem 0.8rem' }}
                           />
+                        </div>
+
+                        {/* Framing & Focal Position Controls */}
+                        <div style={{ padding: '0.85rem', background: 'rgba(0, 240, 255, 0.04)', borderRadius: '10px', border: '1px solid rgba(0, 240, 255, 0.15)', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.78rem', color: '#00f0ff', fontWeight: 600 }}>
+                              🎯 Vertical Focal Alignment / Framing:
+                            </span>
+                            <span className="badge-pill badge-cyan" style={{ fontSize: '0.7rem' }}>
+                              {profile.avatarPosition || 'center 85%'}
+                            </span>
+                          </div>
+
+                          {/* Presets */}
+                          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                            <button
+                              type="button"
+                              onClick={() => setProfile({ ...profile, avatarPosition: 'center 85%' })}
+                              className={`clickable ${ (profile.avatarPosition === 'center 85%' || profile.avatarPosition === 'bottom') ? 'btn-cosmic-primary' : 'btn-cosmic-outline' }`}
+                              style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                            >
+                              👤 Bottom / Standing (85%)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setProfile({ ...profile, avatarPosition: 'center 50%' })}
+                              className={`clickable ${ (profile.avatarPosition === 'center 50%' || profile.avatarPosition === 'center') ? 'btn-cosmic-primary' : 'btn-cosmic-outline' }`}
+                              style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                            >
+                              ⚖️ Center (50%)
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setProfile({ ...profile, avatarPosition: 'center 15%' })}
+                              className={`clickable ${ (profile.avatarPosition === 'center 15%' || profile.avatarPosition === 'top') ? 'btn-cosmic-primary' : 'btn-cosmic-outline' }`}
+                              style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                            >
+                              🔝 Top / Face (15%)
+                            </button>
+                          </div>
+
+                          {/* Custom Slider */}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Top (0%)</span>
+                            <input
+                              type="range"
+                              min="0"
+                              max="100"
+                              value={getAvatarVerticalPercent()}
+                              onChange={(e) => setProfile({ ...profile, avatarPosition: `center ${e.target.value}%` })}
+                              style={{ flex: 1, accentColor: '#00f0ff', cursor: 'pointer' }}
+                            />
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Bottom (100%)</span>
+                          </div>
+                          <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)', margin: 0 }}>
+                            💡 Adjust the slider or click <b>Bottom / Standing</b> to center the subject if your uploaded photo is a vertical/portrait shot.
+                          </p>
                         </div>
                       </div>
                     </div>
