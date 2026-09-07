@@ -365,7 +365,7 @@ export default function HeroSection({ profile, onDownloadResume, onExploreProjec
                 }}
               >
                 <img
-                  src={profile?.avatar || '/assets/avatar_cosmic.png'}
+                  src={profile?.avatar || 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg'}
                   alt={profile?.name || 'CHANDRU R Avatar'}
                   style={{
                     width: '100%',
@@ -375,8 +375,7 @@ export default function HeroSection({ profile, onDownloadResume, onExploreProjec
                     display: 'block'
                   }}
                   onError={(e) => {
-                    // Fallback to placeholder if missing
-                    e.currentTarget.src = '/assets/avatar_cosmic.png';
+                    e.currentTarget.src = 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg';
                   }}
                 />
 

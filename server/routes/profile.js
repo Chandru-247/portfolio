@@ -5,6 +5,7 @@ const { requireAuth } = require('../middleware/auth');
 
 // GET /api/profile
 router.get('/', (req, res) => {
+  res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   const db = getDatabase();
   res.json({
     success: true,

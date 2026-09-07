@@ -28,7 +28,7 @@ const ProfileSchema = new mongoose.Schema({
   statusAvailable: { type: Boolean, default: true },
   location: { type: String, default: 'Bengaluru, India / Remote' },
   email: { type: String, default: 'itismechandru247@gmail.com' },
-  avatar: { type: String, default: '/assets/avatar_cosmic.png' },
+  avatar: { type: String, default: 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg' },
   avatarPosition: { type: String, default: 'center 85%' },
   bio: { type: String, default: '' },
   education: [EducationSchema],

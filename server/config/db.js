@@ -38,7 +38,8 @@ const defaultData = {
     statusAvailable: true,
     location: 'Bengaluru, India / Remote Planetary Station',
     email: 'itismechandru247@gmail.com',
-    avatar: '/assets/avatar_cosmic.png',
+    avatar: 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg',
+    avatarPosition: 'center 85%',
     bio: 'I am a passionate computer science engineer with a deep fascination for algorithms, scalable architectures, and cosmic aesthetics. With a strong foundation in Java, Data Structures & Algorithms, Object-Oriented Design, and modern web frameworks, I build resilient applications that traverse the boundaries of speed and elegance.',
     education: [
       {

@@ -388,7 +388,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
   };
 
   const handleResetAvatar = async () => {
-    const updated = { ...profile, avatar: '/assets/avatar_cosmic.png', avatarPosition: 'center' };
+    const updated = { ...profile, avatar: 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg', avatarPosition: 'center 85%' };
     setProfile(updated);
     try {
       await fetch('/api/profile', {
@@ -399,7 +399,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
         },
         body: JSON.stringify(updated)
       });
-      showToast('Reset to default cosmic astronaut avatar!');
+      showToast('Reset to Chandru profile photo with optimal 85% framing!');
     } catch {
       showToast('Reset avatar in preview. Click Save Avatar to persist.');
     }
@@ -1411,7 +1411,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
                           }}
                         >
                           <img
-                            src={profile.avatar || '/assets/avatar_cosmic.png'}
+                            src={profile.avatar || 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg'}
                             alt="Avatar Preview"
                             style={{ 
                               width: '100%', 
@@ -1419,7 +1419,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
                               objectFit: 'cover',
                               objectPosition: profile.avatarPosition || 'center 85%'
                             }}
-                            onError={(e) => { e.currentTarget.src = '/assets/avatar_cosmic.png'; }}
+                            onError={(e) => { e.currentTarget.src = 'https://res.cloudinary.com/ogtctcs6/image/upload/v1788795478/galaxy_portfolio/assets/asset_Jersey_1788795478115.jpg'; }}
                           />
                         </div>
                         <span style={{ fontSize: '0.7rem', color: '#00f0ff', fontFamily: 'var(--font-mono)' }}>
@@ -1450,7 +1450,7 @@ export default function AdminDashboard({ token, user, onLogout, onClose, onDataR
                             className="btn-cosmic-outline clickable"
                             style={{ padding: '0.55rem 0.9rem', fontSize: '0.82rem' }}
                           >
-                            Reset to Default Avatar
+                            Reset to Default Photo
                           </button>
 
                           <button
