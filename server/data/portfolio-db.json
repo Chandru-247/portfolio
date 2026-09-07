@@ -1,28 +1,51 @@
 {
   "adminUser": {
+    "_id": "6a9ed5323ef84dbca6c40510",
     "username": "admin",
+    "__v": 0,
+    "createdAt": "2026-09-07T15:16:02.635Z",
+    "email": "itismechandru247@gmail.com",
+    "name": "Cosmic Commander",
     "passwordHash": "$2a$10$CxbUcVbyv7ywLvexjPwTyuEk.arAFiGcnk8Pt80GertYkrsddMjaS",
     "role": "administrator",
-    "name": "Cosmic Commander",
-    "email": "itismechandru247@gmail.com"
+    "updatedAt": "2026-09-07T15:16:02.635Z"
   },
   "profile": {
-    "name": "CHANDRU R",
-    "headline": "Software Engineer ",
-    "subheadline": "Architecting high-performance distributed systems, dynamic web applications, and stellar digital experiences.",
-    "typingWords": [
-      "Full-Stack Web Developer",
-      "Java & DSA Specialist",
-      "Distributed Systems Enthusiast",
-      "Cosmic UI/UX Designer",
-      "Open Source Contributor"
-    ],
-    "statusText": "Open to Mission Opportunities",
-    "statusAvailable": true,
-    "location": "Bengaluru, India / Remote Planetary Station",
-    "email": "itismechandru247@gmail.com",
-    "avatar": "https://res.cloudinary.com/ogtctcs6/image/upload/v1788793509/galaxy_portfolio/assets/Asset_Screenshot__2__1788601829164_1788793494514.png",
+    "_id": "6a9ed5323ef84dbca6c4050f",
+    "__v": 0,
+    "avatar": "https://res.cloudinary.com/ogtctcs6/image/upload/v1788795171/galaxy_portfolio/avatars/avatar_chandru_cosmic_1788795150022.jpg",
     "bio": "I am a passionate computer science engineer with a deep fascination for algorithms, scalable architectures, and cosmic aesthetics. With a strong foundation in Java, Data Structures & Algorithms, Object-Oriented Design, and modern web frameworks, I build resilient applications that traverse the boundaries of speed and elegance.",
+    "careerGoals": [
+      {
+        "id": "goal-current",
+        "title": "🚀 Active Career Milestone: Software Development Engineer (SDE)",
+        "status": "Currently Pursuing",
+        "period": "2026 - Present",
+        "goal": "Currently pursuing advanced distributed computing, full-stack microservices architecture, and high-frequency algorithms (650+ DSA solved). Actively preparing for top-tier software engineering mission opportunities."
+      },
+      {
+        "id": "goal-1",
+        "title": "Mission Milestone 1: Scalable Cloud Architecture",
+        "status": "In Progress",
+        "period": "2026",
+        "goal": "Engineer scalable cloud-native microservices capable of handling millions of real-time events with sub-millisecond latencies."
+      },
+      {
+        "id": "goal-2",
+        "title": "Mission Milestone 2: Open Source Core Modules",
+        "status": "Target",
+        "period": "2026 - 2027",
+        "goal": "Contribute core modules to major open-source cloud frameworks and space-exploration visual computing tools."
+      },
+      {
+        "id": "goal-3",
+        "title": "Mission Milestone 3: Lead Systems Engineering",
+        "status": "Vision",
+        "period": "2027+",
+        "goal": "Lead an engineering squadron building resilient software systems that power next-gen frontier technologies."
+      }
+    ],
+    "createdAt": "2026-09-07T15:16:01.588Z",
     "education": [
       {
         "id": "edu-college",
@@ -55,233 +78,307 @@
         "highlights": "School Academic Distinction with 100/100 in Mathematics. State Science Exhibition Finalist."
       }
     ],
-    "careerGoals": [
-      {
-        "id": "goal-current",
-        "title": "🚀 Active Career Milestone: Software Development Engineer (SDE)",
-        "status": "Currently Pursuing",
-        "period": "2026 - Present",
-        "goal": "Currently pursuing advanced distributed computing, full-stack microservices architecture, and high-frequency algorithms (650+ DSA solved). Actively preparing for top-tier software engineering mission opportunities."
-      },
-      {
-        "id": "goal-1",
-        "title": "Mission Milestone 1: Scalable Cloud Architecture",
-        "status": "In Progress",
-        "period": "2026",
-        "goal": "Engineer scalable cloud-native microservices capable of handling millions of real-time events with sub-millisecond latencies."
-      },
-      {
-        "id": "goal-2",
-        "title": "Mission Milestone 2: Open Source Core Modules",
-        "status": "Target",
-        "period": "2026 - 2027",
-        "goal": "Contribute core modules to major open-source cloud frameworks and space-exploration visual computing tools."
-      },
-      {
-        "id": "goal-3",
-        "title": "Mission Milestone 3: Lead Systems Engineering",
-        "status": "Vision",
-        "period": "2027+",
-        "goal": "Lead an engineering squadron building resilient software systems that power next-gen frontier technologies."
-      }
-    ],
-    "stats": {
-      "projectsCompleted": 24,
-      "gitCommits": "1.2K+",
-      "algorithmsSolved": "650+",
-      "certificationsEarned": 6
-    },
+    "email": "itismechandru247@gmail.com",
+    "headline": "Software Engineer ",
+    "location": "Bengaluru, India / Remote Planetary Station",
+    "name": "CHANDRU R",
     "socialLinks": {
       "github": "https://github.com/Chandru-247",
       "linkedin": "https://www.linkedin.com/in/chandru-r-1a93a03b3",
       "instagram": "https://www.instagram.com/darkscent_lunx_",
       "email": "mailto:itismechandru247@gmail.com",
       "discord": "https://discord.com"
-    }
+    },
+    "stats": {
+      "projectsCompleted": 24,
+      "gitCommits": "1.2K+",
+      "algorithmsSolved": "650+",
+      "certificationsEarned": 6
+    },
+    "statusAvailable": true,
+    "statusText": "Open to Mission Opportunities",
+    "subheadline": "Architecting high-performance distributed systems, dynamic web applications, and stellar digital experiences.",
+    "typingWords": [
+      "Full-Stack Web Developer",
+      "Java & DSA Specialist",
+      "Distributed Systems Enthusiast",
+      "Cosmic UI/UX Designer",
+      "Open Source Contributor"
+    ],
+    "updatedAt": "2026-09-07T15:16:01.588Z"
   },
   "resume": {
-    "title": "CHANDRU_R_Software_Engineer_Resume.pdf",
-    "filename": "CHANDRU_R_Resume.pdf",
-    "fileUrl": "/uploads/CHANDRU_R_Resume.pdf",
+    "_id": "6a9ed5323ef84dbca6c40511",
+    "__v": 0,
+    "createdAt": "2026-09-07T15:16:02.704Z",
     "externalUrl": "",
-    "lastUpdated": "2026-09-05T10:10:28.848Z",
     "fileSize": "4.3 KB",
-    "useExternal": false,
-    "isCustomUpload": false
+    "fileUrl": "/uploads/CHANDRU_R_Resume.pdf",
+    "filename": "CHANDRU_R_Resume.pdf",
+    "isCustomUpload": false,
+    "lastUpdated": "2026-09-05T10:10:28.848Z",
+    "title": "CHANDRU_R_Software_Engineer_Resume.pdf",
+    "updatedAt": "2026-09-07T15:16:02.704Z",
+    "useExternal": false
   },
   "skills": [
     {
+      "_id": "6a9ed5324a5bffdd2cfd144d",
       "id": "skill-1",
       "name": "Java",
       "category": "Languages",
       "proficiency": 37,
       "icon": "Coffee",
-      "order": 1
+      "order": 1,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.865Z",
+      "updatedAt": "2026-09-07T15:16:02.865Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd144e",
       "id": "skill-2",
       "name": "JavaScript (ES6+)",
       "category": "Languages",
       "proficiency": 92,
       "icon": "FileCode",
-      "order": 2
+      "order": 2,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.867Z",
+      "updatedAt": "2026-09-07T15:16:02.867Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd144f",
       "id": "skill-3",
       "name": "TypeScript",
       "category": "Languages",
       "proficiency": 88,
       "icon": "Code",
-      "order": 3
+      "order": 3,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.867Z",
+      "updatedAt": "2026-09-07T15:16:02.867Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1450",
       "id": "skill-4",
       "name": "Python",
       "category": "Languages",
       "proficiency": 85,
       "icon": "Terminal",
-      "order": 4
+      "order": 4,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.867Z",
+      "updatedAt": "2026-09-07T15:16:02.867Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1451",
       "id": "skill-5",
       "name": "C++",
       "category": "Languages",
       "proficiency": 80,
       "icon": "Cpu",
-      "order": 5
+      "order": 5,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1452",
       "id": "skill-6",
       "name": "Data Structures & Algorithms",
       "category": "Core CS",
       "proficiency": 95,
       "icon": "Binary",
-      "order": 6
+      "order": 6,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1453",
       "id": "skill-7",
       "name": "Object-Oriented Programming (OOP)",
       "category": "Core CS",
       "proficiency": 96,
       "icon": "Box",
-      "order": 7
+      "order": 7,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1454",
       "id": "skill-8",
       "name": "System Design & Architecture",
       "category": "Core CS",
       "proficiency": 84,
       "icon": "Layers",
-      "order": 8
+      "order": 8,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1455",
       "id": "skill-9",
       "name": "Database Management (DBMS)",
       "category": "Core CS",
       "proficiency": 90,
       "icon": "Database",
-      "order": 9
+      "order": 9,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1456",
       "id": "skill-10",
       "name": "React.js",
       "category": "Frontend",
       "proficiency": 92,
       "icon": "Atom",
-      "order": 10
+      "order": 10,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1457",
       "id": "skill-11",
       "name": "HTML5 & Semantic Markup",
       "category": "Frontend",
       "proficiency": 98,
       "icon": "Layout",
-      "order": 11
+      "order": 11,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1458",
       "id": "skill-12",
       "name": "CSS3 & Modern Animations",
       "category": "Frontend",
       "proficiency": 95,
       "icon": "Palette",
-      "order": 12
+      "order": 12,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.868Z",
+      "updatedAt": "2026-09-07T15:16:02.868Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1459",
       "id": "skill-13",
       "name": "Tailwind CSS",
       "category": "Frontend",
       "proficiency": 90,
       "icon": "Wind",
-      "order": 13
+      "order": 13,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145a",
       "id": "skill-14",
       "name": "Node.js",
       "category": "Backend",
       "proficiency": 90,
       "icon": "Server",
-      "order": 14
+      "order": 14,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145b",
       "id": "skill-15",
       "name": "Express.js",
       "category": "Backend",
       "proficiency": 91,
       "icon": "Radio",
-      "order": 15
+      "order": 15,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145c",
       "id": "skill-16",
       "name": "MongoDB & Mongoose",
       "category": "Backend",
       "proficiency": 89,
       "icon": "HardDrive",
-      "order": 16
+      "order": 16,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145d",
       "id": "skill-17",
       "name": "RESTful API Engineering",
       "category": "Backend",
       "proficiency": 93,
       "icon": "Share2",
-      "order": 17
+      "order": 17,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145e",
       "id": "skill-18",
       "name": "Git & GitHub Version Control",
       "category": "Tools",
       "proficiency": 94,
       "icon": "GitBranch",
-      "order": 18
+      "order": 18,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd145f",
       "id": "skill-19",
       "name": "VS Code & Dev Environment",
       "category": "Tools",
       "proficiency": 96,
       "icon": "Monitor",
-      "order": 19
+      "order": 19,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1460",
       "id": "skill-20",
       "name": "Docker & Containerization",
       "category": "Tools",
       "proficiency": 82,
       "icon": "Package",
-      "order": 20
+      "order": 20,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     },
     {
+      "_id": "6a9ed5324a5bffdd2cfd1461",
       "id": "skill-21",
       "name": "Postman & API Testing",
       "category": "Tools",
       "proficiency": 90,
       "icon": "Send",
-      "order": 21
+      "order": 21,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:02.869Z",
+      "updatedAt": "2026-09-07T15:16:02.869Z"
     }
   ],
   "projects": [],
   "certificates": [
     {
+      "_id": "6a9ed5334a5bffdd2cfd1462",
       "id": "cert-1",
       "title": "AWS Certified Cloud Practitioner (CLF-C02)",
       "issuer": "Amazon Web Services",
@@ -291,9 +388,13 @@
       "credentialUrl": "https://aws.amazon.com/verification",
       "image": "/assets/cert_cloud_architect.png",
       "downloadUrl": "/assets/cert_cloud_architect.png",
-      "featured": true
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:03.107Z",
+      "updatedAt": "2026-09-07T15:16:03.107Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1463",
       "id": "cert-2",
       "title": "Advanced Data Structures & Algorithms in Java",
       "issuer": "HackerRank & Coursera Specialization",
@@ -303,9 +404,13 @@
       "credentialUrl": "https://www.hackerrank.com/certificates",
       "image": "/assets/cert_java_dsa.png",
       "downloadUrl": "/assets/cert_java_dsa.png",
-      "featured": true
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:03.107Z",
+      "updatedAt": "2026-09-07T15:16:03.107Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1464",
       "id": "cert-3",
       "title": "Meta Front-End Developer Professional Certificate",
       "issuer": "Meta (Facebook)",
@@ -315,9 +420,13 @@
       "credentialUrl": "https://coursera.org/verify/professional-cert",
       "image": "/assets/cert_cloud_architect.png",
       "downloadUrl": "/assets/cert_cloud_architect.png",
-      "featured": true
+      "featured": true,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:03.107Z",
+      "updatedAt": "2026-09-07T15:16:03.107Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1465",
       "id": "cert-4",
       "title": "Associate Cloud Engineer & Distributed Systems",
       "issuer": "Google Cloud Platform",
@@ -327,11 +436,15 @@
       "credentialUrl": "https://cloud.google.com/certification",
       "image": "/assets/cert_java_dsa.png",
       "downloadUrl": "/assets/cert_java_dsa.png",
-      "featured": false
+      "featured": false,
+      "__v": 0,
+      "createdAt": "2026-09-07T15:16:03.107Z",
+      "updatedAt": "2026-09-07T15:16:03.107Z"
     }
   ],
   "messages": [
     {
+      "_id": "6a9ed5334a5bffdd2cfd1466",
       "id": "msg-1788604020862",
       "name": "zaid",
       "email": "mohmmedzaid1404@gmail.com",
@@ -340,9 +453,12 @@
       "createdAt": "2026-09-05T10:27:00.862Z",
       "read": false,
       "starred": false,
-      "forwardedTo": "itismechandru247@gmail.com"
+      "forwardedTo": "itismechandru247@gmail.com",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1467",
       "id": "msg-1788603848377",
       "name": "Test Voyager",
       "email": "voyager@test.space",
@@ -351,9 +467,12 @@
       "createdAt": "2026-09-05T10:24:08.377Z",
       "read": false,
       "starred": false,
-      "forwardedTo": "itismechandru247@gmail.com"
+      "forwardedTo": "itismechandru247@gmail.com",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1468",
       "id": "msg-1788603090842",
       "name": "zaid",
       "email": "mohammedzaid1404@gmail.com",
@@ -362,9 +481,12 @@
       "createdAt": "2026-09-05T10:11:30.842Z",
       "read": false,
       "starred": false,
-      "forwardedTo": "itismechandru247@gmail.com"
+      "forwardedTo": "itismechandru247@gmail.com",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd1469",
       "id": "msg-1788601641762",
       "name": "zaid",
       "email": "mohammedzaid1404@gmail.com",
@@ -373,9 +495,12 @@
       "createdAt": "2026-09-05T09:47:21.762Z",
       "read": false,
       "starred": false,
-      "forwardedTo": "itismechandru247@gmail.com"
+      "forwardedTo": "itismechandru247@gmail.com",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd146a",
       "id": "msg-1788601376590",
       "name": "Elon Tester",
       "email": "test@frontier.space",
@@ -384,9 +509,12 @@
       "createdAt": "2026-09-05T09:42:56.590Z",
       "read": false,
       "starred": false,
-      "forwardedTo": "itismechandru247@gmail.com"
+      "forwardedTo": "itismechandru247@gmail.com",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd146b",
       "id": "msg-1788595564543",
       "name": "zaid",
       "email": "mohammedzaid1404@gmail.com",
@@ -394,9 +522,13 @@
       "message": "HI CHANDRU",
       "createdAt": "2026-09-05T08:06:04.543Z",
       "read": false,
-      "starred": false
+      "starred": false,
+      "forwardedTo": "",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd146c",
       "id": "msg-1788537683899",
       "name": "Astraea Vance",
       "email": "astraea@galacticsystems.io",
@@ -404,9 +536,13 @@
       "message": "Greetings Alex! We loved your dynamic galaxy portfolio and would like to schedule an interview.",
       "createdAt": "2026-09-04T16:01:23.899Z",
       "read": false,
-      "starred": false
+      "starred": false,
+      "forwardedTo": "",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
+      "_id": "6a9ed5334a5bffdd2cfd146d",
       "id": "msg-1788534602686",
       "name": "Test Astronaut",
       "email": "astronaut@cosmos.org",
@@ -414,19 +550,13 @@
       "message": "We need an engineer for our lunar satellite cluster.",
       "createdAt": "2026-09-04T15:10:02.686Z",
       "read": false,
-      "starred": false
+      "starred": false,
+      "forwardedTo": "",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     },
     {
-      "id": "msg-1",
-      "name": "Dr. Elena Rostova",
-      "email": "elena.rostova@astralab.org",
-      "subject": "Inquiry: Space Telemetry Visualization Collaboration",
-      "message": "Greetings Alex! We came across your CosmoPulse real-time visualization platform and were truly impressed with your UI polish and latency performance. We would love to discuss an engineering role within our planetary observation team.",
-      "createdAt": "2026-09-02T16:45:00.000Z",
-      "read": false,
-      "starred": true
-    },
-    {
+      "_id": "6a9ed5334a5bffdd2cfd146f",
       "id": "msg-2",
       "name": "Marcus Chen",
       "email": "m.chen@novatech.io",
@@ -434,7 +564,24 @@
       "message": "Hi Alex, your Java and Node.js work along with the stellar portfolio design caught our tech scouting radar. Are you available for a discovery call this upcoming Thursday?",
       "createdAt": "2026-09-03T11:20:00.000Z",
       "read": true,
-      "starred": false
+      "starred": false,
+      "forwardedTo": "",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.252Z"
+    },
+    {
+      "_id": "6a9ed5334a5bffdd2cfd146e",
+      "id": "msg-1",
+      "name": "Dr. Elena Rostova",
+      "email": "elena.rostova@astralab.org",
+      "subject": "Inquiry: Space Telemetry Visualization Collaboration",
+      "message": "Greetings Alex! We came across your CosmoPulse real-time visualization platform and were truly impressed with your UI polish and latency performance. We would love to discuss an engineering role within our planetary observation team.",
+      "createdAt": "2026-09-02T16:45:00.000Z",
+      "read": false,
+      "starred": true,
+      "forwardedTo": "",
+      "__v": 0,
+      "updatedAt": "2026-09-07T15:16:03.251Z"
     }
   ]
 }
